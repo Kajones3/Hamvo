@@ -1,0 +1,41 @@
+
+#Load in the Tidyvers
+install.packages("tidyverse")
+library(tidyverse)
+
+#Let's get all the data in and formatted 
+main <- read.csv("main.csv", header = T, stringsAsFactors = T)
+summary(main)
+str(main)
+main$Date <- as.Date(main$Date, format="%m/%d/%Y")
+str(main)
+stock1 <- read.csv("Stock1.csv", header = T, stringsAsFactors = T)
+stock1$Date <- as.Date(stock1$Date, format = "%m/%d/%Y")
+str(stock1)
+stock2 <- read.csv("Stock2.csv", header = T, stringsAsFactors = T)
+
+#Hypothesis1: 
+#Examine the week of 12/20/15 through week of 12/27/2015.
+#Sales tend to pick up in the first week of January.
+#See how the sales have trended for the four week period from 12/13/2015 to 1/9/2016.
+#If return rates surge higher than the increase in sales in the week of 1/3/2016,
+#seasonality does not explain the surge in returns.
+
+#Let's look at the sales data first.
+ggplot(data=main) +
+  geom_bar(mapping = aes(x = Date))
+
+#Filter out the return data and graph it.
+returns <- filter(main, ReturnCode != "")
+
+ggplot(data=returns) +
+  geom_bar(mapping = aes(x = Date))
+
+#Let's see what is driving the returns.
+ggplot(data=returns) +
+  geom_bar(mapping = aes(x = returns$ReturnCode))+
+  coord_flip()
+
+#Look like RT03 is has almost twice as many returns
+#can we verify?
+summary(returns$ReturnCode)
